@@ -15,7 +15,7 @@ import time
 
 import torchvision.transforms as transforms
 
-from simclr.data_loader import OrientationDataset
+from simclr.src.data_loader import OrientationDataset
 
 
 class NTXentLoss(torch.nn.Module):
@@ -99,7 +99,7 @@ def train(model, loader, batch_size=256):
         for idx, data in enumerate(loader) :
             optimizer.zero_grad()
 
-            zi, zj = data.cuda()
+            zi, zj = [_data.cuda() for _data in data]
             feat_i = model(zi)
             feat_j = model(zj)
             loss = loss_fn(feat_i, feat_j)
@@ -123,7 +123,7 @@ def train(model, loader, batch_size=256):
 
 if __name__ == "__main__":
     train_data = OrientationDataset(project_dir="./simclr",train_flag=1)
-    BATCH_SIZE =  256
+    BATCH_SIZE =  10
     train_loader = DataLoader(dataset=train_data, batch_size=BATCH_SIZE)
 
     model = torchvision.models.resnet50()

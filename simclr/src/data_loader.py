@@ -1,17 +1,16 @@
 import numpy as np
 import cv2
+from PIL import Image
 import re
 import platform
 from torchvision import transforms
 from torch.utils.data import Dataset, DataLoader
 
-img_size = (128, 128)
-
 train_transform =[
     ### IMPLEMENTATION 2-1 ###
     ### 1. Random resized crop w/ final size of (32, 32)
     ### 2. Random horizontal flip w/ p=0.5
-    transforms.RandomResizedCrop(img_size),
+    transforms.Resize(224),
     transforms.RandomHorizontalFlip(p=0.5)
 ]
 
@@ -48,7 +47,9 @@ class OrientationDataset(Dataset):
             current_index = self.test_index[index]
         
         img1 = cv2.imread(self.data_path+str(current_index[0])+'_v0.png')
+        img1 = Image.fromarray(img1)
         img2 = cv2.imread(self.data_path+str(current_index[0])+'_v1.png')
+        img2 = Image.fromarray(img2)
 
         if self.train_flag == 1:
             for t in train_transform :
