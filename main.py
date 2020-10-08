@@ -97,8 +97,8 @@ def train(model, loader, batch_size=256):
 
         epoch_start = time.time()
         for idx, data in enumerate(loader) :
+            if idx % 100 == 0: print(idx) # 14060 = 20*703
             optimizer.zero_grad()
-
             zi, zj = [_data.cuda() for _data in data]
             feat_i = model(zi)
             feat_j = model(zj)
@@ -115,7 +115,7 @@ def train(model, loader, batch_size=256):
                 "\tLoss\t", train_loss, 
                 "\tTime\t", epoch_time,
                 )
-        path = "ckpt/epoch_{}.pt".format(epoch) 
+        path = "simclr/ckpt/epoch_{}.pt".format(epoch) 
         torch.save(model.state_dict(), path)
     
     elapsed_train_time = time.time() - train_start
@@ -123,7 +123,7 @@ def train(model, loader, batch_size=256):
 
 if __name__ == "__main__":
     train_data = OrientationDataset(project_dir="./simclr",train_flag=1)
-    BATCH_SIZE =  10
+    BATCH_SIZE =  20
     train_loader = DataLoader(dataset=train_data, batch_size=BATCH_SIZE)
 
     model = torchvision.models.resnet50()
