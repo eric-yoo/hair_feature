@@ -126,7 +126,7 @@ def train(model, loader, batch_size=256, weight_path=None):
     print('Finished training. Train time was:', elapsed_train_time)
 
 if __name__ == "__main__":
-    train_data = OrientationDataset(project_dir="./simclr",train_flag=1)
+    test_data = OrientationDataset(project_dir="./simclr",train_flag=0)
     BATCH_SIZE =  20
     train_loader = DataLoader(dataset=train_data, batch_size=BATCH_SIZE)
 

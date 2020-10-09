@@ -14,6 +14,10 @@ train_transform =[
     transforms.RandomHorizontalFlip(p=0.5)
 ]
 
+test_transform =[
+    transforms.Resize(224)
+]
+
 class OrientationDataset(Dataset):
     def __init__(self, project_dir, train_flag=1, noise_flag=1):
         self.project_dir = project_dir
@@ -53,6 +57,11 @@ class OrientationDataset(Dataset):
 
         if self.train_flag == 1:
             for t in train_transform :
+                img1 = t(img1)
+                img2 = t(img2)
+        
+        else :
+            for t in test_transform :
                 img1 = t(img1)
                 img2 = t(img2)
 
