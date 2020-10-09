@@ -80,8 +80,8 @@ class NTXentLoss(torch.nn.Module):
         return loss / (2 * self.batch_size)
 
 
-def train(model, loader, batch_size=256):
-    optimizer = torch.optim.Adam(model.parameters(), lr=3e-4, weight_decay=1e-6) 
+def train(model, loader, batch_size=256, weight_path=None):
+    optimizer = torch.optim.Adam(model.parameters(), lr=1e-4, weight_decay=1e-6) 
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=len(train_loader), eta_min=0,
                                                                last_epoch=-1)
   
@@ -89,15 +89,19 @@ def train(model, loader, batch_size=256):
     temperature = 0.07
     loss_fn = NTXentLoss(batch_size=batch_size, temperature=temperature, use_cosine_similarity=True)
 
+    resume_epoch = 0
+    if weight_path != None:
+        model.load_state_dict(torch.load(weight_path))
+        resume_epoch = int(weight_path.split("epoch_")[1].split(".pt")[0])
+        print("resume training from epoch {}".format(resume_epoch))
 
     train_start = time.time()
-    for epoch in range(1, n_epoch + 1) :
+    for epoch in range(resume_epoch+1, n_epoch + 1) :
         model.train()
         train_loss = 0
 
         epoch_start = time.time()
         for idx, data in enumerate(loader) :
-            if idx % 100 == 0: print(idx) # 14060 = 20*703
             optimizer.zero_grad()
             zi, zj = [_data.cuda() for _data in data]
             feat_i = model(zi)
@@ -131,6 +135,6 @@ if __name__ == "__main__":
     os.environ["CUDA_VISIBLE_DEVICES"] = GPU_NUM
     model.cuda()
 
-    train(model, train_loader, batch_size = BATCH_SIZE)
+    train(model, train_loader, batch_size = BATCH_SIZE, weight_path = "./simclr/ckpt/epoch_150.pt")
 
 
