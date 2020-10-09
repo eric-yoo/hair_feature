@@ -100,7 +100,7 @@ def inference(model, target, data_path) :
 
 """
     Not tested !
-    
+
     target_data : (343, 3, 224, 224) Tensor
 
     output : (343, 1000) Normalized Tensor
@@ -124,7 +124,7 @@ if __name__ == "__main__":
     os.environ["CUDA_VISIBLE_DEVICES"] = GPU_NUM
     model.cuda()
 
-    ckpt = "epoch_150.pt"
+    ckpt = "ckpt/epoch_150.pt"
     state_dict = torch.load(ckpt)
     model.load_state_dict(state_dict)
 
