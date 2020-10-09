@@ -42,7 +42,7 @@ def test(model, loader, BATCH_SIZE=20) :
     correct = 0
     with torch.no_grad() :
         for idx, data in enumerate(loader) :
-            if idx % 100 == 0: print(idx) # 14060 = 20*703
+            if idx % 100 == 0: print("id", idx) # 14060 = 20*703
     
             zi, zj = [_data.cuda() for _data in data] # (n, 3, 224, 224)
             n = zi.size(0)
@@ -60,7 +60,7 @@ def test(model, loader, BATCH_SIZE=20) :
             total += n
             correct += (predicted == answer).sum().item()
 
-            print("Accuracy : ", correct / total)
+            #print("Accuracy : ", correct / total)
     
     print("Total Accuracy : ", correct / total)
 
@@ -112,7 +112,7 @@ def make_target(model, target_data) :
         feat = model(target_data.cuda()) # (343, 1000)
         feat = f.normalize(feat, dim=1) # (343, 1000)
 
-    reutnr target_data
+    return feat
 
 if __name__ == "__main__":
     test_data = OrientationDataset(project_dir="./simclr",train_flag=0)
@@ -124,7 +124,7 @@ if __name__ == "__main__":
     os.environ["CUDA_VISIBLE_DEVICES"] = GPU_NUM
     model.cuda()
 
-    ckpt = "ckpt/epoch_150.pt"
+    ckpt = "simclr/ckpt/epoch_150.pt"
     state_dict = torch.load(ckpt)
     model.load_state_dict(state_dict)
 
